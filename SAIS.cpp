@@ -368,35 +368,20 @@ SuffixArray sais(const vector<size_t> &text)
         vector<size_t> v = {0};
         return v;
     }
-    // vector<int> naiveCabbage = naiveSA("cabbage");
-    // printVector("naive cabbage", naiveCabbage);
-    // size_t n = text.size();
 
-    // ranked text
-    // cout
-    //     << "text"
-    //     << ":    [";
-    // for (size_t i = 0; i < n - 1; i++)
-    // {
-    //     cout << text[i] << " ";
-    // }
-    // cout << text[n - 1] << "]" << endl;
+    size_t uniqueChars = getUniqueChars(text);
+    vector<char> typemap = buildTypeMap(text);
+    vector<size_t> LMSSuffixes = findLMSSuffixes(text, typemap);
+    vector<size_t> bucketSizes = findBucketSizes(text, uniqueChars);
+    vector<size_t> guessedSA = guessLMS(text, bucketSizes, LMSSuffixes, typemap, uniqueChars);
+    induceSortL(text, guessedSA, bucketSizes, typemap, uniqueChars);
+    induceSortS(text, guessedSA, bucketSizes, typemap, uniqueChars);
+    summary reducedString = reduceString(text, guessedSA, typemap);
+    vector<size_t> summarySA = makeSummarySA(reducedString);
+    vector<size_t> result = accurateLMSSort(text, bucketSizes, typemap, summarySA, reducedString.offsets, uniqueChars);
+    induceSortL(text, result, bucketSizes, typemap, uniqueChars);
+    induceSortS(text, result, bucketSizes, typemap, uniqueChars);
 
-    // size_t uniqueChars = getUniqueChars(text);
-    // vector<char> typemap = buildTypeMap(text);
-    // vector<size_t> LMSSuffixes = findLMSSuffixes(text, typemap);
-    // vector<size_t> bucketSizes = findBucketSizes(text, uniqueChars);
-    // vector<size_t> guessedSA = guessLMS(text, bucketSizes, LMSSuffixes, typemap, uniqueChars);
-    // induceSortL(text, guessedSA, bucketSizes, typemap, uniqueChars);
-    // induceSortS(text, guessedSA, bucketSizes, typemap, uniqueChars);
-    // summary reducedString = reduceString(text, guessedSA, typemap);
-    // vector<size_t> summarySA = makeSummarySA(reducedString);
-    // vector<size_t> result = accurateLMSSort(text, bucketSizes, typemap, summarySA, reducedString.offsets, uniqueChars);
-    // induceSortL(text, result, bucketSizes, typemap, uniqueChars);
-    // induceSortS(text, result, bucketSizes, typemap, uniqueChars);
-
-    // vector<size_t> solution = dc3(text);
-    // printVector("Real solution", solution);
-    // return result;
-    return dc3(text);
+    return result;
+    // return dc3(text);
 }
